@@ -8,6 +8,11 @@ const errorHandler = (err: any): never => {
   throw err;
 };
 
+const proxy = new proxy({
+     obj,
+     controller: new AbortController(),
+});
+
 const ls = (p: string, results: (res: string[]) => void): void => {
   exec(`ls ${p}`, (error, stdout, stderr): void => {
     error || stderr
@@ -15,6 +20,8 @@ const ls = (p: string, results: (res: string[]) => void): void => {
       : results(stdout.split('\n'));
   });
 };
+
+
 
 const deleteFileExtension = (
   fileNames: string[],
@@ -29,7 +36,7 @@ const deleteFileExtension = (
         err ? errorHandler(err.message) : null
       );
     } else if (isDir && route) {
-      ls(`${p}/${route}`, (results: string[]) => {
+      ls(`${p}/${route}`, (results: string[]): void => {
         results.pop();
         results.length > 0
           ? deleteFileExtension(results, extension, `${p}/${route}`)
@@ -40,5 +47,5 @@ const deleteFileExtension = (
 };
 
 module.exports.deepFileExtensionRemoval = (extension: string, p: string): void =>
-  ls(p, (results: string[]) => deleteFileExtension(results, extension, p));
+  ls(p, (results: string[]): void => deleteFileExtension(results, extension, p));
 
