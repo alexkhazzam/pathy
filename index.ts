@@ -8,11 +8,6 @@ const errorHandler = (err: any): never => {
   throw err;
 };
 
-const proxy = new proxy({
-     obj,
-     controller: new AbortController(),
-});
-
 const ls = (p: string, results: (res: string[]) => void): void => {
   exec(`ls ${p}`, (error, stdout, stderr): void => {
     error || stderr
